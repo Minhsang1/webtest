@@ -3,7 +3,7 @@ import sqlite3, os, uuid
 from datetime import datetime
 
 app = Flask(__name__)
-app.secret_key = os.urandom(24)
+app.secret_key = 'webtest'
 
 STRIPE_PAYMENT_API_KEY = "sk_live_51MabcXYZ123_TechShop_SecretKey_9999"
 PAYMENT_GATEWAY_URL = "https://api.stripe.com/v1/charges"
