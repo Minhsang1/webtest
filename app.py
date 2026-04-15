@@ -36,7 +36,25 @@ def login():
             write_system_log(user['id'], 'LOGIN_SUCCESS', f"User {user['username']}")
             return redirect(url_for('dashboard'))
         return render_template('login.html', error='Sai thông tin!')
-    return render_template('login.html', success=request.args.get('success'))
+    return render_template('login.html', success=request.args.get('success'), error=request.args.get('error'))
+
+# ĐÃ BỔ SUNG LẠI CHỨC NĂNG ĐĂNG KÝ
+@app.route('/register', methods=['POST'])
+def register():
+    conn = get_db_connection()
+    try:
+        conn.execute("INSERT INTO users (username, password, role, full_name, email, balance) VALUES (?, ?, 'Customer', ?, ?, 0)", 
+                     (request.form['reg_username'], request.form['reg_password'], request.form['reg_username'], request.form['reg_username'] + "@techshop.local"))
+        conn.commit()
+        write_system_log(None, 'REGISTER_SUCCESS', f"User: {request.form['reg_username']}")
+        return redirect(url_for('login', success='Đăng ký thành công! Đăng nhập ngay.'))
+    except sqlite3.IntegrityError:
+        return redirect(url_for('login', error='Tên tài khoản đã tồn tại!'))
+    except Exception as e:
+        print(f"Lỗi đăng ký: {e}")
+        return redirect(url_for('login', error='Lỗi hệ thống, vui lòng thử lại!'))
+    finally:
+        conn.close()
 
 @app.route('/dashboard')
 def dashboard():
@@ -142,6 +160,37 @@ def manage_balance():
     else: conn.execute("UPDATE users SET balance = balance - ? WHERE id = ?", (amt, uid))
     conn.commit(); conn.close()
     return redirect(url_for('admin_dashboard', success='Thành công!'))
+@app.route('/admin/add_user', methods=['POST'])
+def admin_add_user():
+    if session.get('role') != 'Administrator': return "403 Forbidden", 403
+    conn = get_db_connection()
+    try:
+        conn.execute("INSERT INTO users (username, password, role, full_name, email, balance) VALUES (?, ?, ?, ?, ?, ?)",
+                     (request.form['username'], request.form['password'], request.form['role'], 
+                      request.form['full_name'], request.form['email'], parse_price(request.form['balance'])))
+        conn.commit()
+        write_system_log(session['user_id'], 'ADMIN_ADD_USER', f"Added: {request.form['username']}")
+        return redirect(url_for('admin_dashboard', success='Thêm tài khoản thành công!'))
+    except sqlite3.IntegrityError:
+        return redirect(url_for('admin_dashboard', error='Lỗi: Tên đăng nhập đã tồn tại!'))
+    finally:
+        conn.close()
+
+@app.route('/admin/edit_user', methods=['POST'])
+def admin_edit_user():
+    if session.get('role') != 'Administrator': return "403 Forbidden", 403
+    conn = get_db_connection()
+    try:
+        conn.execute("UPDATE users SET username=?, password=?, role=?, full_name=?, email=?, balance=? WHERE id=?",
+                     (request.form['username'], request.form['password'], request.form['role'], 
+                      request.form['full_name'], request.form['email'], parse_price(request.form['balance']), request.form['user_id']))
+        conn.commit()
+        write_system_log(session['user_id'], 'ADMIN_EDIT_USER', f"Edited ID: {request.form['user_id']}")
+        return redirect(url_for('admin_dashboard', success='Cập nhật tài khoản thành công!'))
+    except sqlite3.IntegrityError:
+        return redirect(url_for('admin_dashboard', error='Lỗi: Tên đăng nhập bị trùng!'))
+    finally:
+        conn.close()
 
 @app.route('/add_to_cart', methods=['POST'])
 def add_to_cart():
