@@ -2,162 +2,171 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>TechShop - Premium Dashboard</title>
+    <title>TechShop - Cửa hàng</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --primary-color: #2c3e50; --accent-color: #f1c40f; }
-        body { background-color: #f8f9fa; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        .navbar { background: linear-gradient(135deg, #1a1a1a, #2c3e50) !important; padding: 1rem 0; }
-        .category-bar { background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-bottom: 1px solid #eee; }
-        .category-link { color: #555; text-decoration: none; font-weight: 600; padding: 15px 25px; display: inline-block; transition: 0.3s; border-bottom: 3px solid transparent; }
-        .category-link:hover { color: #e74c3c; border-bottom: 3px solid #e74c3c; background: #fff5f5; }
-        .hero-section { background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=1200&h=300'); background-size: cover; background-position: center; height: 300px; border-radius: 20px; display: flex; align-items: center; justify-content: center; color: white; text-align: center; margin-bottom: 40px; }
-        .product-card { border: none; border-radius: 15px; transition: 0.3s; overflow: hidden; background: #fff; }
-        .product-card:hover { transform: translateY(-10px); box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
-        .img-container { height: 200px; padding: 20px; background: #fff; display: flex; align-items: center; justify-content: center; }
-        .img-container img { max-height: 100%; transition: 0.5s; }
-        .product-card:hover img { transform: scale(1.1); }
-        .card-title { font-size: 0.95rem; font-weight: 600; color: #333; height: 2.8rem; overflow: hidden; }
-        .price-new { color: #e74c3c; font-size: 1.2rem; font-weight: 700; }
-        .price-old { text-decoration: line-through; color: #999; font-size: 0.85rem; }
-        .badge-install { position: absolute; top: 10px; left: 10px; background: #eee; color: #666; font-size: 0.7rem; padding: 4px 8px; border-radius: 5px; z-index: 5; }
-        .badge-discount { position: absolute; top: 10px; right: 10px; background: #e74c3c; color: #fff; font-size: 0.75rem; font-weight: bold; padding: 4px 8px; border-radius: 5px; z-index: 5; }
-        footer { background: #1a1a1a; color: white; border-top: 5px solid #f1c40f; }
-        .subscribe-box { background: rgba(255,255,255,0.05); padding: 40px; border-radius: 20px; }
+        body { background-color: #f8f9fa; }
+        .product-card { transition: transform 0.2s; border: none; border-radius: 12px; }
+        .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .cart-btn { position: fixed; bottom: 30px; right: 30px; z-index: 1000; border-radius: 50%; width: 60px; height: 60px; font-size: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .sidebar-link { color: #333; padding: 10px 15px; border-radius: 8px; margin-bottom: 5px; display: block; text-decoration: none; }
+        .sidebar-link:hover, .sidebar-link.active { background-color: #0d6efd; color: white; }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark sticky-top shadow">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
         <div class="container">
-            <a class="navbar-brand fw-bold fs-3" href="/dashboard"><i class="fas fa-bolt text-warning me-2"></i>TechShop</a>
-            <div class="collapse navbar-collapse">
-                <form method="GET" action="/dashboard" class="d-flex mx-auto w-50">
-                    <input class="form-control rounded-pill border-0 px-4" type="search" name="search" placeholder="Hôm nay bạn muốn mua gì?" value="{{ search_query }}">
-                </form>
-                <ul class="navbar-nav ms-auto align-items-center">
-                    <li class="nav-item me-4">
-                        <button class="btn btn-link position-relative text-white" type="button" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas">
-                            <i class="fas fa-shopping-bag fa-lg"></i>
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">{% if cart %}{{ cart|length }}{% else %}0{% endif %}</span>
-                        </button>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle text-white fw-bold d-flex align-items-center" href="#" data-bs-toggle="dropdown">
-                            <img src="https://ui-avatars.com/api/?name={{ username }}&background=random" class="rounded-circle me-2" width="30"> {{ username }}
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-3">
-    {% if role == 'Administrator' %}
-    <li><a class="dropdown-item fw-bold text-primary" href="/admin"><i class="fas fa-user-shield me-2"></i>QUẢN TRỊ VIÊN</a></li>
-    {% endif %}
-    <li><a class="dropdown-item fw-bold text-success" href="/wallet"><i class="fas fa-wallet me-2"></i>Ví TechShop</a></li>
-    <li><a class="dropdown-item" href="/profile"><i class="fas fa-user-circle me-2"></i>Hồ sơ</a></li>
-    <li><hr class="dropdown-divider"></li>
-    <li><a class="dropdown-item text-danger fw-bold" href="/logout"><i class="fas fa-power-off me-2"></i>Đăng xuất</a></li>
-</ul>
-                    </li>
-                </ul>
+            <a class="navbar-brand fw-bold" href="/dashboard"><i class="fas fa-microchip me-2 text-primary"></i>TECHSHOP</a>
+            <div class="d-flex align-items-center">
+                <button class="btn btn-warning btn-sm me-3 fw-bold" data-bs-toggle="modal" data-bs-target="#topupModal"><i class="fas fa-qrcode"></i> Nạp Tiền</button>
+                <span class="text-warning fw-bold me-4"><i class="fas fa-wallet"></i> {{ balance }}</span>
+                <div class="dropdown">
+                    <a class="text-white text-decoration-none dropdown-toggle" href="#" data-bs-toggle="dropdown"><i class="fas fa-user-circle fa-lg"></i> {{ username }}</a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow">
+                        <li><a class="dropdown-item" href="/profile"><i class="fas fa-id-card me-2"></i>Hồ sơ</a></li>
+                        <li><a class="dropdown-item" href="/orders"><i class="fas fa-history me-2"></i>Đơn hàng</a></li>
+                        {% if role == 'Administrator' %}
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger fw-bold" href="/admin"><i class="fas fa-shield-alt me-2"></i>Quản trị</a></li>
+                        {% endif %}
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="/logout"><i class="fas fa-sign-out-alt me-2"></i>Đăng xuất</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
     </nav>
-    <div class="category-bar mb-4">
-        <div class="container text-center">
-            <a href="/dashboard?search=Laptop" class="category-link"><i class="fas fa-laptop me-2"></i>Laptop</a>
-            <a href="/dashboard?search=iPhone" class="category-link"><i class="fas fa-mobile-alt me-2"></i>Điện thoại</a>
-            <a href="/dashboard?search=Apple" class="category-link"><i class="fas fa-apple-alt me-2"></i>Apple</a>
-            <a href="/dashboard?search=Loa" class="category-link"><i class="fas fa-headphones me-2"></i>Phụ kiện</a>
-        </div>
+
+    <div class="container mt-3">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm fw-bold">
+                {{ message }} <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
     </div>
-    <div class="container">
-        {% if not search_query %}
-        <div class="hero-section shadow">
-            <div>
-                <h1 class="display-4 fw-bold text-warning">XẢ KHO CÔNG NGHỆ</h1>
-                <p class="fs-4">Giảm giá lên đến 50% - Bảo hành 24 tháng</p>
-                <button class="btn btn-warning btn-lg fw-bold rounded-pill px-5">XEM NGAY</button>
-            </div>
-        </div>
-        {% endif %}
-        <h4 class="fw-bold mb-4 border-start border-5 border-danger ps-3">Gợi Ý Cho Bạn</h4>
-        <div class="row g-4">
-            {% for p in products %}
-            <div class="col-xl-3 col-lg-4 col-md-6">
-                <div class="card h-100 product-card shadow-sm position-relative">
-                    <div class="badge-install">Trả góp 0%</div>
-                    {% if p['discount'] %}<div class="badge-discount">{{ p['discount'] }}</div>{% endif %}
-                    <a href="/product?id={{ p['id'] }}" class="text-decoration-none">
-                        <div class="img-container">
-                            <img src="{{ p['image_url'] }}" class="img-fluid">
-                        </div>
-                    </a>
-                    <div class="card-body d-flex flex-column px-3">
-                        <h6 class="card-title">{{ p['name'] }}</h6>
-                        <div class="mb-2">
-                            <span class="price-new">{{ p['price'] }}</span>
-                            {% if p['old_price'] %}<span class="price-old ms-2">{{ p['old_price'] }}</span>{% endif %}
-                        </div>
-                        <div class="d-flex align-items-center mb-3 small">
-                            <div class="text-warning me-2"><i class="fas fa-star"></i> {{ p['rating'] }}</div>
-                            <div class="text-muted">Đã bán {{ p['sold'] }}</div>
-                        </div>
-                        <form action="/add_to_cart" method="POST" class="mt-auto">
-                            <input type="hidden" name="product_id" value="{{ p['id'] }}">
-                            <button class="btn btn-outline-dark w-100 fw-bold rounded-pill">MUA NGAY</button>
-                        </form>
-                    </div>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-3 mb-4">
+                <div class="bg-white p-3 rounded shadow-sm">
+                    <h6 class="fw-bold mb-3 text-muted">DANH MỤC</h6>
+                    <a href="/dashboard" class="sidebar-link {% if not request.args.get('cat') %}active{% endif %}"><i class="fas fa-list me-2"></i>Tất cả</a>
+                    <a href="/dashboard?cat=apple" class="sidebar-link {% if request.args.get('cat') == 'apple' %}active{% endif %}"><i class="fab fa-apple me-2"></i>Apple</a>
+                    <a href="/dashboard?cat=laptop" class="sidebar-link {% if request.args.get('cat') == 'laptop' %}active{% endif %}"><i class="fas fa-laptop me-2"></i>Laptop</a>
+                    <a href="/dashboard?cat=tablet" class="sidebar-link {% if request.args.get('cat') == 'tablet' %}active{% endif %}"><i class="fas fa-tablet-alt me-2"></i>Tablet</a>
                 </div>
             </div>
-            {% endfor %}
+
+            <div class="col-md-9">
+                <form class="mb-4 d-flex" action="/dashboard" method="GET">
+                    <input type="text" name="search" class="form-control me-2" placeholder="Tìm kiếm sản phẩm...">
+                    <button class="btn btn-primary px-4" type="submit"><i class="fas fa-search"></i></button>
+                </form>
+
+                <div class="row">
+                    {% for p in products %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card product-card shadow-sm h-100">
+                            <img src="{{ p.image_url }}" class="card-img-top" style="height: 180px; object-fit: cover;">
+                            <div class="card-body d-flex flex-column">
+                                <h6 class="fw-bold">{{ p.name }}</h6>
+                                <p class="text-danger fw-bold fs-5 mt-auto">{{ p.price }}</p>
+                                <form action="/add_to_cart" method="POST">
+                                    <input type="hidden" name="product_id" value="{{ p.id }}">
+                                    <button class="btn btn-outline-primary w-100 fw-bold"><i class="fas fa-cart-plus me-2"></i>Thêm</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5 text-muted">Không tìm thấy sản phẩm.</div>
+                    {% endfor %}
+                </div>
+            </div>
         </div>
     </div>
-    <footer class="mt-5 py-5 text-center">
-        <div class="container">
-            <div class="subscribe-box mx-auto w-75">
-                <h3 class="fw-bold text-warning mb-3">ĐĂNG KÝ NHẬN VOUCHER 500K</h3>
-                <p class="text-light opacity-75 mb-4">Chúng tôi sẽ gửi các chương trình khuyến mãi sớm nhất tới bạn.</p>
-                <form action="/subscribe" method="POST" class="d-flex justify-content-center w-75 mx-auto">
-                    <input type="text" name="email" class="form-control rounded-start-pill border-0 px-4 py-3" placeholder="Nhập email của bạn..." required>
-                    <button type="submit" class="btn btn-warning rounded-end-pill px-5 fw-bold">GỬI</button>
+
+    <div class="modal fade" id="topupModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="/topup" method="POST">
+                    <div class="modal-header bg-warning"><h6 class="modal-title fw-bold">NẠP TIỀN HỆ THỐNG</h6></div>
+                    <div class="modal-body text-start">
+                        <p class="small text-muted text-center">Nhập thông tin chuyển khoản</p>
+                        <label class="fw-bold small">Chọn Ngân hàng:</label>
+                        <select name="bank" class="form-select mb-2"><option value="Vietcombank">Vietcombank</option><option value="Techcombank">Techcombank</option><option value="MBBank">MB Bank</option><option value="Momo">Ví Momo</option></select>
+                        <label class="fw-bold small">Số tài khoản chuyển:</label>
+                        <input type="text" name="account_number" class="form-control mb-2" placeholder="Nhập số tài khoản của bạn" required>
+                        <label class="fw-bold small">Số tiền đã nạp:</label>
+                        <input type="text" name="amount" class="form-control mb-3" placeholder="VD: 500000" required>
+                    </div>
+                    <div class="modal-footer"><button type="submit" class="btn btn-warning w-100 fw-bold text-dark">XÁC NHẬN NẠP TIỀN</button></div>
                 </form>
             </div>
-            <div class="mt-5 pt-4 border-top border-secondary">
-                <p class="small text-muted mb-0">© 2026 TechShop Premium System - Bảo mật bởi Pentest Team.</p>
-            </div>
-        </div>
-    </footer>
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="cartOffcanvas">
-        <div class="offcanvas-header border-bottom">
-            <h5 class="offcanvas-title fw-bold"><i class="fas fa-shopping-bag me-2 text-danger"></i>GIỎ HÀNG</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
-        </div>
-        <div class="offcanvas-body bg-light">
-            {% if cart %}
-                {% for item in cart %}
-                <div class="d-flex align-items-center bg-white p-3 mb-3 rounded shadow-sm">
-                    <img src="{{ item['image'] }}" width="60" class="rounded me-3">
-                    <div class="flex-grow-1"><h6 class="mb-0 small fw-bold">{{ item['name'] }}</h6><small class="text-danger fw-bold">{{ item['price'] }}</small></div>
-                    <form action="/remove_from_cart" method="POST" class="mb-0">
-                        <input type="hidden" name="item_index" value="{{ loop.index0 }}">
-                        <button class="btn btn-link text-danger"><i class="fas fa-trash"></i></button>
-                    </form>
-                </div>
-                {% endfor %}
-            {% else %}
-                <div class="text-center py-5 opacity-25"><i class="fas fa-box-open fa-4x"></i><p class="mt-3">Giỏ hàng trống</p></div>
-            {% endif %}
-        </div>
-        <div class="p-4 bg-white border-top">
-            <h5 class="d-flex justify-content-between fw-bold mb-4"><span>Tổng:</span> <span class="text-danger">{{ cart_total }}</span></h5>
-            <form action="/checkout" method="POST">
-                <button class="btn btn-danger w-100 py-3 fw-bold rounded-pill {% if not cart %}disabled{% endif %}">THANH TOÁN NGAY</button>
-            </form>
         </div>
     </div>
+
+    <button class="btn btn-danger cart-btn" data-bs-toggle="offcanvas" data-bs-target="#cartSidebar">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark" style="font-size: 12px;">{{ cart|length }}</span>
+    </button>
+
+    <div class="offcanvas offcanvas-end" id="cartSidebar">
+        <div class="offcanvas-header bg-dark text-white">
+            <h5 class="fw-bold mb-0">GIỎ HÀNG</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body d-flex flex-column">
+            {% if cart %}
+                <div class="flex-grow-1 overflow-auto">
+                    {% for item in cart %}
+                    <div class="d-flex align-items-center mb-3 border-bottom pb-2">
+                        <img src="{{ item.image }}" width="50" class="rounded me-2">
+                        <div class="flex-grow-1">
+                            <small class="d-block fw-bold text-truncate" style="max-width: 180px;">{{ item.name }}</small>
+                            <small class="text-danger fw-bold">{{ item.price }}</small>
+                        </div>
+                        <a href="/remove_from_cart/{{ item.id }}" class="text-secondary ms-2" title="Xóa"><i class="fas fa-times-circle fa-lg text-danger"></i></a>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="mt-3 pt-3 border-top">
+                    <h5 class="d-flex justify-content-between fw-bold"><span>Tổng:</span> <span class="text-danger">{{ cart_total }}</span></h5>
+                    
+                    <div class="d-flex gap-2 mt-3">
+                        <form action="/checkout" method="POST" class="w-50" onsubmit="return confirm('Thanh toán bằng ví TechShop?');">
+                            <button type="submit" class="btn btn-danger w-100 py-2 fw-bold">MUA BẰNG VÍ</button>
+                        </form>
+                        <button class="btn btn-warning w-50 py-2 fw-bold" data-bs-toggle="modal" data-bs-target="#qrCheckoutModal"><i class="fas fa-qrcode"></i> PAY QR</button>
+                    </div>
+                </div>
+            {% else %}
+                <div class="text-center mt-5 text-muted"><i class="fas fa-box-open fa-3x mb-3"></i><p>Giỏ hàng trống!</p></div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="modal fade" id="qrCheckoutModal" tabindex="-1">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white"><h6 class="modal-title fw-bold">QUÉT MÃ THANH TOÁN</h6></div>
+                <div class="modal-body text-center">
+                    <p class="small text-muted mb-2">Sử dụng App Ngân hàng quét mã để thanh toán <strong>{{ cart_total }}</strong></p>
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=TECHSHOP-PAY-{{ cart_total }}" class="img-thumbnail mb-3">
+                    <form action="/checkout" method="POST">
+                        <button type="submit" class="btn btn-danger w-100 fw-bold">ĐÃ QUÉT & XÁC NHẬN</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        if (new URLSearchParams(window.location.search).has('cart_open')) {
-            new bootstrap.Offcanvas(document.getElementById('cartOffcanvas')).show();
-        }
-    </script>
 </body>
 </html>

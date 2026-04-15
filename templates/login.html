@@ -27,24 +27,65 @@
                     <li class="nav-item ms-2"><button class="nav-link px-4" data-bs-toggle="pill" data-bs-target="#pills-register">Đăng Ký</button></li>
                 </ul>
                 <div class="tab-content">
+                    
                     <div class="tab-pane fade show active" id="pills-login">
                         <form method="POST" action="/">
-                            <div class="mb-3"><label class="form-label text-muted small fw-bold">Tài khoản</label><input type="text" name="username" class="form-control" required></div>
-                            <div class="mb-4"><label class="form-label text-muted small fw-bold">Mật khẩu</label><input type="password" name="password" class="form-control" required></div>
+                            <div class="mb-3">
+                                <label class="form-label text-muted small fw-bold">Tài khoản</label>
+                                <input type="text" name="username" class="form-control" required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label text-muted small fw-bold">Mật khẩu</label>
+                                <div class="input-group">
+                                    <input type="password" id="loginPass" name="password" class="form-control" required>
+                                    <button class="btn btn-outline-secondary" type="button" onclick="togglePass('loginPass', 'eyeLogin')">
+                                        <i class="fas fa-eye" id="eyeLogin"></i>
+                                    </button>
+                                </div>
+                            </div>
                             <button type="submit" class="btn btn-dark w-100 fw-bold rounded-pill">Đăng Nhập</button>
                         </form>
                     </div>
+
                     <div class="tab-pane fade" id="pills-register">
                         <form method="POST" action="/register">
-                            <div class="mb-3"><label class="form-label text-muted small fw-bold">Tên tài khoản</label><input type="text" name="reg_username" class="form-control" required></div>
-                            <div class="mb-4"><label class="form-label text-muted small fw-bold">Mật khẩu</label><input type="password" name="reg_password" class="form-control" required></div>
+                            <div class="mb-3">
+                                <label class="form-label text-muted small fw-bold">Tên tài khoản</label>
+                                <input type="text" name="reg_username" class="form-control" required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label text-muted small fw-bold">Mật khẩu</label>
+                                <div class="input-group">
+                                    <input type="password" id="regPass" name="reg_password" class="form-control" required>
+                                    <button class="btn btn-outline-secondary" type="button" onclick="togglePass('regPass', 'eyeReg')">
+                                        <i class="fas fa-eye" id="eyeReg"></i>
+                                    </button>
+                                </div>
+                            </div>
                             <button type="submit" class="btn btn-warning w-100 fw-bold rounded-pill">Đăng Ký</button>
                         </form>
                     </div>
+
                 </div>
             </div>
         </div>
     </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        function togglePass(inputId, iconId) {
+            var inputField = document.getElementById(inputId);
+            var icon = document.getElementById(iconId);
+            
+            if (inputField.type === "password") {
+                inputField.type = "text";
+                icon.classList.replace("fa-eye", "fa-eye-slash");
+            } else {
+                inputField.type = "password";
+                icon.classList.replace("fa-eye-slash", "fa-eye");
+            }
+        }
+    </script>
 </body>
 </html>
