@@ -173,4 +173,6 @@ def payment_failed(): return render_template('payment_failed.html', error=reques
 @app.route('/logout')
 def logout(): session.clear(); return redirect(url_for('login'))
 
-if __name__ == '__main__': app.run(host='0.0.0.0', port=5000, debug=True)
+if __name__ == '__main__': 
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
