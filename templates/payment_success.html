@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Thanh Toán Thành Công</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-light">
+    <div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+        <div class="card border-0 shadow-lg p-5 text-center" style="max-width: 500px; border-radius: 20px;">
+            <div class="mb-4">
+                <i class="fas fa-check-circle text-success" style="font-size: 80px;"></i>
+            </div>
+            <h2 class="fw-bold text-success mb-3">Thanh Toán Thành Công!</h2>
+            <p class="text-muted fs-5">Cảm ơn <strong>{{ username }}</strong> đã mua sắm tại TechShop.</p>
+            
+            <div class="bg-light p-3 rounded-3 mb-4 text-start border">
+                <p class="mb-1 text-muted small">Mã Đơn Hàng:</p>
+                <h5 class="fw-bold mb-3">{{ order_code }}</h5>
+                <p class="mb-1 text-muted small">Tổng Thanh Toán:</p>
+                <h4 class="fw-bold text-danger mb-0">{{ total }}</h4>
+            </div>
+            
+            <p class="small text-muted mb-4">Thông tin chi tiết đơn hàng đã được gửi vào email của bạn. Hệ thống đang chuẩn bị hàng để giao.</p>
+            <a href="/dashboard" class="btn btn-dark btn-lg w-100 fw-bold rounded-pill">VỀ TRANG CHỦ MUA SẮM</a>
+        </div>
+    </div>
+</body>
+</html>

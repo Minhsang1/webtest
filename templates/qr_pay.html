@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Quét Mã QR - TechShop</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-dark">
+    <div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+        <div class="card border-0 p-4 text-center shadow-lg" style="max-width: 400px; border-radius: 30px;">
+            <h4 class="fw-bold mb-4">Quét mã QR để mua</h4>
+            <div class="bg-light p-4 rounded-4 mb-4 border border-5 border-warning">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=TECHSHOP-PAYMENT-CHECKOUT" class="img-fluid rounded shadow-sm">
+            </div>
+            <p class="text-muted small">Sử dụng ứng dụng Ngân hàng hoặc Ví TechShop để quét mã và hoàn tất thanh toán.</p>
+            <div class="spinner-border text-warning my-3" role="status"></div>
+            <p class="fw-bold text-dark mb-4">Đang chờ xác nhận giao dịch...</p>
+            <a href="/dashboard" class="btn btn-outline-dark w-100 rounded-pill fw-bold">HỦY GIAO DỊCH</a>
+        </div>
+    </div>
+</body>
+</html>

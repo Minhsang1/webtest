@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>TechShop - Đăng Nhập</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { background: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=2070') no-repeat center center fixed; background-size: cover; height: 100vh; display: flex; align-items: center; justify-content: center; }
+        .overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.6); z-index: 1; }
+        .login-card { background: rgba(255, 255, 255, 0.95); border-radius: 20px; box-shadow: 0 25px 50px rgba(0,0,0,0.3); backdrop-filter: blur(10px); z-index: 2; width: 100%; max-width: 450px;}
+        .login-header { background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); color: white; padding: 30px 20px; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+    <div class="container position-relative z-2 d-flex justify-content-center">
+        <div class="card login-card border-0">
+            <div class="login-header">
+                <h2 class="fw-bold mb-0"><i class="fas fa-laptop-code me-2 text-warning"></i>TechShop</h2>
+            </div>
+            <div class="card-body p-4">
+                {% if error %}<div class="alert alert-danger">{{ error|safe }}</div>{% endif %}
+                {% if success %}<div class="alert alert-success">{{ success }}</div>{% endif %}
+                <ul class="nav nav-pills mb-4 justify-content-center" id="pills-tab" role="tablist">
+                    <li class="nav-item"><button class="nav-link active px-4" data-bs-toggle="pill" data-bs-target="#pills-login">Đăng Nhập</button></li>
+                    <li class="nav-item ms-2"><button class="nav-link px-4" data-bs-toggle="pill" data-bs-target="#pills-register">Đăng Ký</button></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="pills-login">
+                        <form method="POST" action="/">
+                            <div class="mb-3"><label class="form-label text-muted small fw-bold">Tài khoản</label><input type="text" name="username" class="form-control" required></div>
+                            <div class="mb-4"><label class="form-label text-muted small fw-bold">Mật khẩu</label><input type="password" name="password" class="form-control" required></div>
+                            <button type="submit" class="btn btn-dark w-100 fw-bold rounded-pill">Đăng Nhập</button>
+                        </form>
+                    </div>
+                    <div class="tab-pane fade" id="pills-register">
+                        <form method="POST" action="/register">
+                            <div class="mb-3"><label class="form-label text-muted small fw-bold">Tên tài khoản</label><input type="text" name="reg_username" class="form-control" required></div>
+                            <div class="mb-4"><label class="form-label text-muted small fw-bold">Mật khẩu</label><input type="password" name="reg_password" class="form-control" required></div>
+                            <button type="submit" class="btn btn-warning w-100 fw-bold rounded-pill">Đăng Ký</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
